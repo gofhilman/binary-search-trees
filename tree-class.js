@@ -48,6 +48,20 @@ class Tree {
         if(value > root.data) return this.find(value, root.right);
     }
 
+    levelOrder(callback) {
+        if(!callback) throw new Error("Callback is required!");
+        if(this.root === null) return;
+        const queue = [this.root];
+        let qFrontIndex = 0;
+        while(qFrontIndex < queue.length) {
+            const current = queue[qFrontIndex];
+            callback(current);
+            if(current.left !== null) queue.push(current.left);
+            if(current.right !== null) queue.push(current.right);
+            qFrontIndex++;
+        }
+    }
+
     getSuccessor(root) {
         root = root.right;
         while(root !== null && root.left !== null) {
