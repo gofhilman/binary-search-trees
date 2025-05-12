@@ -19,6 +19,37 @@ class Tree {
         return root;
     }
 
+    insert(value, root = this.root) {
+        if(root === null) return new Node(value);
+        if(value < root.data) root.left = this.insert(value, root.left);
+        if(value > root.data) root.right = this.insert(value, root.right);
+        return root;
+    }
+    
+    deleteItem(value, root = this.root) {
+        if(root === null) return root;
+        if(value < root.data) {
+            root.left = this.deleteItem(value, root.left);
+        } else if(value > root.data) {
+            root.right = this.deleteItem(value, root.right);
+        } else {
+            if(root.left === null) return root.right;
+            if(root.right === null) return root.left;
+            const successor = this.getSuccessor(root);
+            root.data = successor.data;
+            root.right = this.deleteItem(successor.data, root.right)
+        }
+        return root;
+    }
+
+    getSuccessor(root) {
+        root = root.right;
+        while(root !== null && root.left !== null) {
+            root = root.left;
+        }
+        return root;
+    }
+
     prettyPrint(node = this.root, prefix = "", isLeft = true) {
         if (node === null) return;
         if (node.right !== null) {
@@ -29,7 +60,6 @@ class Tree {
             this.prettyPrint(node.left, `${prefix}${isLeft ? "    " : "│   "}`, true);
         }
     };
-
 }
 
 export default Tree;
