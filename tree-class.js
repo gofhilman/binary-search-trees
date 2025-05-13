@@ -62,12 +62,65 @@ class Tree {
         }
     }
 
+    inOrder(callback, root = this.root) {
+        if(!callback) throw new Error("Callback is required!");
+        if(root === null) return;
+        this.inOrder(callback, root.left);
+        callback(root);
+        this.inOrder(callback, root.right);
+    }
+
+    preOrder(callback, root = this.root) {
+        if(!callback) throw new Error("Callback is required!");
+        if(root === null) return;
+        callback(root);
+        this.preOrder(callback, root.left);
+        this.preOrder(callback, root.right);
+    }
+    
+    postOrder(callback, root = this.root) {
+        if(!callback) throw new Error("Callback is required!");
+        if(root === null) return;
+        this.postOrder(callback, root.left);
+        this.postOrder(callback, root.right);
+        callback(root);
+    }
+
+    height(value) {
+        if(!this.find(value)) return null;
+        return this.findHeight(this.find(value));
+    }
+
+    depth(value) {
+        if(!this.find(value)) return null;
+        return this.findDepth(value);
+    }
+
     getSuccessor(root) {
         root = root.right;
         while(root !== null && root.left !== null) {
             root = root.left;
         }
         return root;
+    }
+
+    findHeight(root, steps = 0, maxSteps = []) {
+        if(root.left === null && root.right === null) {
+            maxSteps.push(steps);
+            return Math.max(...maxSteps);
+        }
+        if(root.left !== null) {
+            this.findHeight(root.left, ++steps, maxSteps);
+        } else if(root.right !== null) {
+            this.findHeight(root.right, ++steps, maxSteps);
+        }
+        return Math.max(...maxSteps);
+    }
+
+    findDepth(value, root = this.root, steps = 0) {
+        if(root.data === value) return steps;
+        if(value < root.data) return this.findDepth(value, root.left, ++steps);
+        if(value > root.data) return this.findDepth(value, root.right, ++steps);        
     }
 
     prettyPrint(node = this.root, prefix = "", isLeft = true) {
