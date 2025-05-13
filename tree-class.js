@@ -3,6 +3,7 @@ import Node from "./node-class.js";
 class Tree {
     constructor() {
         this.root = null;
+        this.sortedArray = [];
     }
 
     buildTree(array) {
@@ -94,6 +95,34 @@ class Tree {
     depth(value) {
         if(!this.find(value)) return null;
         return this.findDepth(value);
+    }
+
+    isBalanced() {
+        if(this.root === null) return;
+        const queue = [this.root];
+        let qFrontIndex = 0;
+        while(qFrontIndex < queue.length) {
+            const current = queue[qFrontIndex];
+            if(current.left !== null && current.right !== null && 
+                Math.abs(this.findHeight(current.left) - 
+                this.findHeight(current.right)) > 1) {
+                return false;
+            }
+            if(current.left !== null) queue.push(current.left);
+            if(current.right !== null) queue.push(current.right);
+            qFrontIndex++;
+        }
+        return true;
+    }
+
+    rebalance() {
+        if(!this.isBalanced()) {
+            this.inOrder(root => {
+                this.sortedArray.push(root.data);
+            });
+            this.root = this.buildBST(this.sortedArray);
+        }
+        return this.root;
     }
 
     getSuccessor(root) {
